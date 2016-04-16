@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     static ArrayList<String> places;
     static ArrayAdapter<String> arrayAdapter;
-    static ArrayAdapter<LatLng> locations;
+    static ArrayList<LatLng> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         initializeListView();
+        initializeLocations();
+    }
+
+    private void initializeLocations() {
+        locations = new ArrayList<>();
+        locations.add(new LatLng(0, 0));
     }
 
     private void initializeListView() {

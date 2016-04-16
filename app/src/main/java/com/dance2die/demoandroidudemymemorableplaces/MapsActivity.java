@@ -28,6 +28,7 @@ import java.util.Locale;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
+    private int location = -1;
 
     // http://stackoverflow.com/q/16097143/4035
     @Override
@@ -46,6 +47,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         MainActivity.places.add(label);
         MainActivity.arrayAdapter.notifyDataSetChanged();
+        MainActivity.locations.add(point);
 
         mMap.addMarker(new MarkerOptions()
                 .position(point)
@@ -70,7 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initializeBackButton() {
 //        ActionBar actionBar = getActionBar();
         // http://stackoverflow.com/a/32758821/4035
-        android.support.v7.app.ActionBar actionBar =  getSupportActionBar();
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
@@ -90,6 +92,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initializeData() {
         Intent i = getIntent();
         Log.i("locationinfo", Integer.toString(i.getIntExtra("locationinfo", -1)));
+        location = i.getIntExtra("locationinfo", -1);
     }
 
 
@@ -107,9 +110,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setOnMapLongClickListener(this);
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        if (location != 0 && location != -1) {
+            LatLng position = MainActivity.locations.get(location);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
+            mMap.addMarker(new MarkerOptions().position(position).title(MainActivity.places.get(location)));
+        }
+
+//        // Add a marker in Sydney and move the camera
+//        LatLng sydney = new LatLng(-34, 151);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

@@ -12,14 +12,24 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 // http://stackoverflow.com/a/34132455/4035
 //public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
+
+    // http://stackoverflow.com/q/16097143/4035
+    @Override
+    public void onMapLongClick(LatLng point) {
+        mMap.addMarker(new MarkerOptions()
+                .position(point)
+                .title("You are here")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapLongClickListener(this);
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);

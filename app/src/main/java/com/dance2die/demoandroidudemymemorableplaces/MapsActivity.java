@@ -2,6 +2,8 @@ package com.dance2die.demoandroidudemymemorableplaces;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 // http://stackoverflow.com/a/34132455/4035
 //public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
@@ -25,9 +32,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // http://stackoverflow.com/q/16097143/4035
     @Override
     public void onMapLongClick(LatLng point) {
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        String label = new Date().toString();
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1);
+            if (addresses != null && addresses.size() > 0){
+                label = addresses.get(0).getAddressLine(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         mMap.addMarker(new MarkerOptions()
                 .position(point)
-                .title("You are here")
+                .title(label)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
     }
 

@@ -4,6 +4,9 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,10 +28,13 @@ import java.util.Locale;
 
 // http://stackoverflow.com/a/34132455/4035
 //public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+public class MapsActivity extends AppCompatActivity
+        implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, LocationListener {
 
     private GoogleMap mMap;
     private int location = -1;
+    private LocationManager locationManager;
+    private String provider;
 
     // http://stackoverflow.com/q/16097143/4035
     @Override
@@ -120,5 +126,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

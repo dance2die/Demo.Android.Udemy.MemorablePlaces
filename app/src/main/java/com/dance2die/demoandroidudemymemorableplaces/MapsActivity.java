@@ -3,6 +3,7 @@ package com.dance2die.demoandroidudemymemorableplaces;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -70,8 +71,14 @@ public class MapsActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        initializeLocation();
         initializeBackButton();
         initializeData();
+    }
+
+    private void initializeLocation() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        provider = locationManager.getBestProvider(new Criteria(), false);
     }
 
     // http://stackoverflow.com/a/13741187/4035
@@ -88,6 +95,7 @@ public class MapsActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
+                locationManager.removeUpdates(this);
                 this.finish();
                 return true;
             default:
@@ -117,9 +125,13 @@ public class MapsActivity extends AppCompatActivity
         mMap.setOnMapLongClickListener(this);
 
         if (location != 0 && location != -1) {
+            locationManager.removeUpdates(this);
+
             LatLng position = MainActivity.locations.get(location);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
             mMap.addMarker(new MarkerOptions().position(position).title(MainActivity.places.get(location)));
+        } else {
+            locationManager.requestLocationUpdates(provider, 400, 1, this);
         }
 
 //        // Add a marker in Sydney and move the camera
@@ -129,8 +141,25 @@ public class MapsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    protected void onResume() {
+        super.onResume();
+        if (location == -1 || location == 0){
+            locationManager.requestLocationUpdates(provider, 400, 1, this);
+        }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onLocationChanged(Location useLocation) {
+        LatLng position = new LatLng(useLocation.getLatitude(), useLocation.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
+        mMap.addMarker(new MarkerOptions().position(position).title(MainActivity.places.get(location)));
     }
 
     @Override

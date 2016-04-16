@@ -44,6 +44,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             e.printStackTrace();
         }
 
+        MainActivity.places.add(label);
+        MainActivity.arrayAdapter.notifyDataSetChanged();
+
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .title(label)
